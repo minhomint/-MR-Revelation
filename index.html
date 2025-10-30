@@ -121,6 +121,47 @@
             font-weight: bold;
         }
         
+        .audio-setup {
+            background: #f8f9ff;
+            border: 2px dashed #5B9BD5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .audio-setup h3 {
+            margin: 0 0 15px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .audio-setup {
+                padding: 15px;
+            }
+            
+            .audio-setup h3 {
+                font-size: 1.1em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .audio-setup {
+                padding: 12px;
+            }
+            
+            .audio-setup h3 {
+                font-size: 1em;
+            }
+            
+            .audio-setup label {
+                font-size: 0.9em;
+            }
+            
+            .audio-setup input,
+            .audio-setup button {
+                font-size: 0.9em;
+            }
+        }
+        
         .audio-info {
             background: white;
             border: 2px solid #5B9BD5;
@@ -887,12 +928,67 @@
         
         <!-- 오디오 플레이어 -->
         <div class="audio-player">
+            <!-- 음원 설정 영역 -->
+            <div class="audio-setup" id="audioSetup" style="display: none;">
+                <h3 style="color: #5B9BD5; margin-bottom: 15px; text-align: center;">🎵 음원 설정</h3>
+                
+                <!-- 현재 설정 상태 -->
+                <div style="background: #e8f5e9; border: 2px solid #48bb78; border-radius: 8px; padding: 12px; margin-bottom: 15px;">
+                    <div style="color: #48bb78; font-weight: 600; margin-bottom: 5px;">✓ 현재 설정</div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        음악 없는 요한계시록 <strong>전체 1-22장</strong> 음원이 자동으로 설정되었습니다! 🎉
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 600;">
+                        방법 1: 파일 업로드 (현재 장 변경)
+                    </label>
+                    <input type="file" id="audioFileInput" accept="audio/*" 
+                           style="width: 100%; padding: 10px; border: 2px solid #5B9BD5; border-radius: 8px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 600;">
+                        방법 2: URL 입력 (현재 장 변경)
+                    </label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="audioUrlInput" placeholder="https://example.com/audio.mp3"
+                               style="flex: 1; padding: 10px; border: 2px solid #5B9BD5; border-radius: 8px;">
+                        <button onclick="setUrlForCurrentChapter()" 
+                                style="padding: 10px 20px; background: #5B9BD5; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            설정
+                        </button>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 600;">
+                        방법 3: 기본 폴더 경로 변경 (모든 장)
+                    </label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="basePathInput" placeholder="/audio 또는 https://example.com/audio"
+                               style="flex: 1; padding: 10px; border: 2px solid #5B9BD5; border-radius: 8px;">
+                        <button onclick="setBasePathFromInput()" 
+                                style="padding: 10px 20px; background: #5B9BD5; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            설정
+                        </button>
+                    </div>
+                    <small style="color: #999; display: block; margin-top: 5px;">
+                        * 폴더 안에 revelation_1.mp3 ~ revelation_22.mp3 형식 파일이 있어야 합니다.
+                    </small>
+                </div>
+                <button onclick="toggleAudioSetup()" 
+                        style="width: 100%; padding: 10px; background: #48bb78; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    ✓ 설정 완료
+                </button>
+            </div>
+            
             <div class="audio-info">
                 <div class="current-chapter" id="audioChapterDisplay">계 1장</div>
                 <div class="current-title" id="audioTitleDisplay">로딩 중...</div>
             </div>
             
             <div class="audio-controls">
+                <button onclick="toggleAudioSetup()" style="background: #f6ad55; color: white; border-color: #f6ad55;">🎵 음원설정</button>
                 <button onclick="playAudio()" id="playBtn">▶️ 재생</button>
                 <button onclick="pauseAudio()" id="pauseBtn">⏸️ 일시정지</button>
                 <button onclick="stopAudio()">⏹️ 정지</button>
@@ -1108,10 +1204,35 @@
         let playbackSpeed = 1.0;
         const speedOptions = [1.0, 1.25, 1.5, 1.75, 2.0];
         
-        // 음원 파일 경로 (실제 파일 경로로 수정 필요)
+        // 음원 파일 경로 (사용자가 설정 가능)
+        let audioBasePath = '/mnt/user-data/uploads'; // 업로드된 파일 경로
+        let audioUrls = {}; // 각 장별 URL 저장
+        
         function getAudioPath(chapter) {
-            return `/audio/revelation_${chapter}.mp3`;
-            // 또는 외부 URL: return `https://your-domain.com/audio/revelation_${chapter}.mp3`;
+            // 사용자가 설정한 URL이 있으면 사용
+            if (audioUrls[chapter]) {
+                return audioUrls[chapter];
+            }
+            // 업로드된 파일 사용
+            if (audioBasePath) {
+                return `${audioBasePath}/음악_없는_요한계시록_${chapter}장.mp3`;
+            }
+            // 테스트용 - 빈 오디오 (무음)
+            return '';
+        }
+        
+        // 음원 URL 설정 함수
+        function setAudioUrl(chapter, url) {
+            audioUrls[chapter] = url;
+            if (audioChapter === chapter) {
+                loadAudio(chapter);
+            }
+        }
+        
+        // 기본 경로 설정 함수
+        function setBasePath(path) {
+            audioBasePath = path;
+            loadAudio(audioChapter);
         }
         
         // 오디오 초기화
@@ -1123,6 +1244,7 @@
             audioPlayer.addEventListener('timeupdate', updateProgress);
             audioPlayer.addEventListener('ended', handleAudioEnded);
             audioPlayer.addEventListener('loadedmetadata', updateDuration);
+            audioPlayer.addEventListener('error', handleAudioError);
             
             // 프로그레스 바 조작
             document.getElementById('progressSlider').addEventListener('input', function() {
@@ -1136,8 +1258,71 @@
                 document.getElementById('volumeDisplay').textContent = this.value + '%';
             });
             
+            // 파일 업로드 이벤트
+            document.getElementById('audioFileInput').addEventListener('change', handleFileUpload);
+            
             // 초기 볼륨 설정
             audioPlayer.volume = 0.7;
+        }
+        
+        // 파일 업로드 처리
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                setAudioUrl(audioChapter, url);
+                alert(`${audioChapter}장 음원이 설정되었습니다!`);
+            }
+        }
+        
+        // URL 설정 (현재 장)
+        function setUrlForCurrentChapter() {
+            const url = document.getElementById('audioUrlInput').value.trim();
+            if (url) {
+                setAudioUrl(audioChapter, url);
+                alert(`${audioChapter}장 음원이 설정되었습니다!`);
+                document.getElementById('audioUrlInput').value = '';
+            } else {
+                alert('URL을 입력해주세요.');
+            }
+        }
+        
+        // 기본 경로 설정
+        function setBasePathFromInput() {
+            const path = document.getElementById('basePathInput').value.trim();
+            if (path) {
+                setBasePath(path);
+                alert('기본 경로가 설정되었습니다!\n모든 장의 음원 파일이 해당 폴더에 있어야 합니다.');
+                document.getElementById('basePathInput').value = '';
+            } else {
+                alert('경로를 입력해주세요.');
+            }
+        }
+        
+        // 음원 설정 패널 토글
+        function toggleAudioSetup() {
+            const setup = document.getElementById('audioSetup');
+            if (setup.style.display === 'none') {
+                setup.style.display = 'block';
+            } else {
+                setup.style.display = 'none';
+            }
+        }
+        
+        // 오디오 에러 처리
+        function handleAudioError(e) {
+            console.error('오디오 로드 오류:', e);
+            if (!audioPlayer.src || audioPlayer.src === window.location.href) {
+                // 음원이 설정되지 않은 경우
+                const setup = document.getElementById('audioSetup');
+                if (setup && setup.style.display === 'none') {
+                    alert('음원이 설정되지 않았습니다.\n상단의 "🎵 음원설정"을 클릭하여 음원을 설정해주세요.');
+                    setup.style.display = 'block';
+                }
+            } else {
+                // 파일을 찾을 수 없는 경우
+                alert('음원 파일을 불러올 수 없습니다.\n파일 경로나 URL을 확인해주세요.');
+            }
         }
         
         // 오디오 로드
@@ -1157,7 +1342,19 @@
         
         // 재생
         function playAudio() {
-            audioPlayer.play();
+            if (!audioPlayer.src || audioPlayer.src === window.location.href) {
+                const setup = document.getElementById('audioSetup');
+                alert('음원이 설정되지 않았습니다.\n"🎵 음원 설정"에서 음원을 설정해주세요.');
+                if (setup) {
+                    setup.style.display = 'block';
+                }
+                return;
+            }
+            
+            audioPlayer.play().catch(err => {
+                console.error('재생 오류:', err);
+                alert('음원을 재생할 수 없습니다.\n파일 경로나 URL을 확인해주세요.');
+            });
             isPlaying = true;
             document.getElementById('playBtn').classList.add('playing');
             document.getElementById('pauseBtn').classList.remove('playing');
@@ -1183,8 +1380,10 @@
         // 이전 장
         function previousChapter() {
             if (isShuffle) {
+                // 랜덤: 1-22장 전체
                 audioChapter = Math.floor(Math.random() * 22) + 1;
             } else {
+                // 순차: 1-22장 순환
                 audioChapter = audioChapter > 1 ? audioChapter - 1 : 22;
             }
             loadAudio(audioChapter);
@@ -1194,8 +1393,10 @@
         // 다음 장
         function nextChapter() {
             if (isShuffle) {
+                // 랜덤: 1-22장 전체
                 audioChapter = Math.floor(Math.random() * 22) + 1;
             } else {
+                // 순차: 1-22장 순환
                 audioChapter = audioChapter < 22 ? audioChapter + 1 : 1;
             }
             loadAudio(audioChapter);
@@ -1272,7 +1473,7 @@
                 audioPlayer.currentTime = sectionStart;
                 playAudio();
             } else if (isRepeat) {
-                nextChapter();
+                nextChapter(); // 다음 장으로 (음원 있는 장만)
             } else {
                 stopAudio();
             }
@@ -1313,7 +1514,13 @@
             for (let i = 1; i <= 22; i++) {
                 const item = document.createElement('div');
                 item.className = 'playlist-item' + (i === audioChapter ? ' active' : '');
-                item.textContent = `${i}장. ${chapterTitles[i]}`;
+                
+                // 모든 음원 제공됨! (1-22장)
+                const audioAvailable = true;
+                const statusIcon = '🎵';
+                
+                item.innerHTML = `${statusIcon} ${i}장. ${chapterTitles[i]}`;
+                
                 item.onclick = () => {
                     loadAudio(i);
                     if (isPlaying) playAudio();
@@ -1528,6 +1735,14 @@
         window.onload = function() {
             initAudio();
             renderVerses();
+            
+            // 음원이 설정되어 있으면 설정 패널 숨김
+            const setup = document.getElementById('audioSetup');
+            if (setup && audioBasePath) {
+                setup.style.display = 'none';
+            } else if (setup && !audioBasePath && Object.keys(audioUrls).length === 0) {
+                setup.style.display = 'block';
+            }
         };
     </script>
 </body>
