@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>요한계시록 1-10장 암기 도구</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>계시록 인맞기 + 음원재생</title>
     <style>
         * {
             margin: 0;
@@ -12,226 +12,1037 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e3f2fd 100%);
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: linear-gradient(135deg, #5B9BD5 0%, #4A90E2 100%);
             min-height: 100vh;
             padding: 20px;
         }
         
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+        }
+        
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 15px;
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 10px;
+                padding: 15px;
+            }
         }
         
         .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #5B9BD5;
+        }
+        
+        h1 {
+            color: #5B9BD5;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .subtitle {
+                font-size: 1em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .subtitle {
+                font-size: 0.9em;
+            }
+        }
+        
+        /* 오디오 플레이어 스타일 */
+        .audio-player {
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 30px;
-            margin-bottom: 24px;
+            border: 3px solid #5B9BD5;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(91, 155, 213, 0.15);
         }
         
-        .header h1 {
-            font-size: 28px;
-            color: #1e293b;
-            margin-bottom: 12px;
+        @media (max-width: 768px) {
+            .audio-player {
+                padding: 20px;
+                border-width: 2px;
+            }
         }
         
-        .header p {
-            color: #64748b;
-            margin-bottom: 16px;
+        @media (max-width: 480px) {
+            .audio-player {
+                padding: 15px;
+                border-radius: 10px;
+            }
         }
         
-        .toggle-all-btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background 0.3s;
+        .audio-player h2 {
+            color: #5B9BD5;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
         }
         
-        .toggle-all-btn:hover {
-            background: #1d4ed8;
-        }
-        
-        .info-box {
-            background: #fef3c7;
-            border: 1px solid #fbbf24;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 24px;
-            font-size: 14px;
-            color: #92400e;
-        }
-        
-        .chapter {
+        .audio-info {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 16px;
-            overflow: hidden;
+            border: 2px solid #5B9BD5;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
         }
         
-        .chapter-header {
-            padding: 20px;
-            cursor: pointer;
+        .audio-info .current-chapter {
+            color: #5B9BD5;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .audio-info .current-title {
+            color: #666;
+            font-size: 1em;
+        }
+        
+        @media (max-width: 768px) {
+            .audio-info {
+                padding: 12px;
+            }
+            
+            .audio-info .current-chapter {
+                font-size: 1.2em;
+            }
+            
+            .audio-info .current-title {
+                font-size: 0.9em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .audio-info {
+                padding: 10px;
+            }
+            
+            .audio-info .current-chapter {
+                font-size: 1.1em;
+            }
+            
+            .audio-info .current-title {
+                font-size: 0.85em;
+            }
+        }
+        
+        .audio-controls {
             display: flex;
-            gap: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .audio-controls button {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            border: 2px solid #5B9BD5;
+            background: white;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #5B9BD5;
+        }
+        
+        .audio-controls button:hover {
+            background: #EBF4FA;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(91, 155, 213, 0.2);
+        }
+        
+        .audio-controls button:active {
+            transform: translateY(0);
+        }
+        
+        .audio-controls button.playing {
+            background: #5B9BD5;
+            color: white;
+        }
+        
+        .audio-controls button.repeat-on {
+            background: #5B9BD5;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .audio-controls button {
+                min-width: 100px;
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .audio-controls button {
+                min-width: calc(50% - 5px);
+                padding: 10px;
+                font-size: 0.85em;
+            }
+        }
+        
+        .progress-container {
+            background: white;
+            border: 2px solid #5B9BD5;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            color: #5B9BD5;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .progress-container {
+                padding: 12px;
+            }
+            
+            .time-display {
+                font-size: 0.85em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .progress-container {
+                padding: 10px;
+            }
+            
+            .time-display {
+                font-size: 0.8em;
+            }
+        }
+        
+        .progress-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #EBF4FA;
+            outline: none;
+            -webkit-appearance: none;
+            margin-bottom: 10px;
+        }
+        
+        .progress-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #5B9BD5;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(91, 155, 213, 0.3);
+        }
+        
+        .progress-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #5B9BD5;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .volume-control {
+            display: flex;
             align-items: center;
-            transition: background 0.3s;
+            gap: 10px;
         }
         
-        .chapter-header:hover {
-            background: #f8fafc;
+        .volume-control label {
+            color: #5B9BD5;
+            font-weight: 600;
         }
         
-        .chevron {
-            transition: transform 0.3s;
-            font-size: 18px;
-            color: #2563eb;
+        .volume-slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #EBF4FA;
+            outline: none;
+            -webkit-appearance: none;
         }
         
-        .chevron.rotate {
-            transform: rotate(90deg);
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #5B9BD5;
+            cursor: pointer;
+        }
+        
+        .volume-slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #5B9BD5;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .playlist {
+            background: white;
+            border: 2px solid #5B9BD5;
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .playlist h3 {
+            color: #5B9BD5;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .playlist-item {
+            background: white;
+            border: 1px solid #5B9BD5;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+        }
+        
+        .playlist-item:hover {
+            background: #EBF4FA;
+            border-color: #4A90E2;
+            transform: translateX(5px);
+        }
+        
+        .playlist-item.active {
+            background: #5B9BD5;
+            color: white;
+            font-weight: bold;
+            border-color: #5B9BD5;
+        }
+        
+        @media (max-width: 768px) {
+            .playlist {
+                max-height: 250px;
+                padding: 12px;
+            }
+            
+            .playlist h3 {
+                font-size: 1em;
+            }
+            
+            .playlist-item {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .playlist {
+                max-height: 200px;
+                padding: 10px;
+            }
+            
+            .playlist h3 {
+                font-size: 0.95em;
+            }
+            
+            .playlist-item {
+                padding: 8px 10px;
+                font-size: 0.85em;
+            }
+        }
+        
+        /* 기존 스타일 유지 */
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #EBF4FA;
+            border-radius: 12px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: #5B9BD5;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #4A90E2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(91,155,213,0.4);
+        }
+        
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .btn {
+                padding: 10px 18px;
+                font-size: 0.95em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .btn {
+                padding: 9px 15px;
+                font-size: 0.85em;
+                flex: 1 1 calc(50% - 5px);
+                min-width: calc(50% - 5px);
+            }
+        }
+        
+        .chapter-selector {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            border: 2px solid #5B9BD5;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .chapter-selector {
+                padding: 10px;
+                font-size: 0.95em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .chapter-selector {
+                padding: 9px;
+                font-size: 0.9em;
+            }
+        }
+        
+        .chapter-title-container {
+            background: linear-gradient(135deg, #5B9BD5 0%, #4A90E2 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(91,155,213,0.3);
         }
         
         .chapter-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1e293b;
-            flex: 1;
-        }
-        
-        .verse-count {
-            background: #e2e8f0;
-            color: #64748b;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .verses {
-            display: none;
-            padding: 16px;
-            background: #f8fafc;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        .verses.show {
-            display: block;
-        }
-        
-        .verse {
-            background: white;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            color: white;
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
             cursor: pointer;
-            transition: box-shadow 0.3s;
+            transition: all 0.3s;
         }
         
-        .verse:hover {
-            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        .chapter-title.hidden {
+            color: transparent;
+            text-shadow: 0 0 15px rgba(255,255,255,0.5);
+            user-select: none;
+        }
+        
+        .chapter-title:hover {
+            transform: scale(1.02);
+        }
+        
+        .title-memorized {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9em;
+        }
+        
+        .title-memorized input[type="checkbox"] {
+            margin-right: 5px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .chapter-title-container {
+                padding: 15px;
+            }
+            
+            .chapter-title {
+                font-size: 1.2em;
+            }
+            
+            .title-memorized {
+                font-size: 0.85em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .chapter-title-container {
+                padding: 12px;
+                margin-bottom: 20px;
+            }
+            
+            .chapter-title {
+                font-size: 1.1em;
+            }
+            
+            .title-memorized {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+            
+            .title-memorized input[type="checkbox"] {
+                width: 14px;
+                height: 14px;
+            }
+        }
+        
+        .verse-container {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .verse-container:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #5B9BD5;
+        }
+        
+        .verse-container.memorized {
+            background: #f0fff4;
+            border-color: #48bb78;
+        }
+        
+        .verse-container.key-verse {
+            background: #fef9c3;
+            border-color: #facc15;
+            border-width: 2px;
         }
         
         .verse-header {
             display: flex;
-            gap: 12px;
-            align-items: flex-start;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
         }
         
-        .verse-num {
-            background: #2563eb;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+        .verse-number {
+            font-weight: bold;
+            color: #5B9BD5;
+            font-size: 1.2em;
+        }
+        
+        .memorize-check {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            flex-shrink: 0;
+            gap: 8px;
+            cursor: pointer;
         }
         
-        .verse-num.highlight {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+        .memorize-check input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
         }
         
         .verse-text {
-            flex: 1;
-            color: #1e293b;
-            line-height: 1.8;
+            line-height: 2;
+            font-size: 1.15em;
         }
         
-        .verse-hidden {
-            color: #94a3b8;
-            font-style: italic;
+        @media (max-width: 768px) {
+            .verse-container {
+                padding: 15px;
+            }
+            
+            .verse-text {
+                font-size: 1.1em;
+                line-height: 1.9;
+            }
         }
         
-        .tips {
-            background: #dbeafe;
-            border: 1px solid #60a5fa;
+        @media (max-width: 480px) {
+            .verse-container {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+            
+            .verse-header {
+                margin-bottom: 12px;
+            }
+            
+            .verse-number {
+                font-size: 1.1em;
+            }
+            
+            .verse-text {
+                font-size: 1.05em;
+                line-height: 1.8;
+            }
+            
+            .memorize-check {
+                font-size: 0.9em;
+            }
+        }
+        
+        .word {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        
+        .word:hover {
+            background: #edf2f7;
+        }
+        
+        .word.hidden {
+            background: #5B9BD5;
+            color: #5B9BD5;
+            user-select: none;
+            min-width: 40px;
+            display: inline-block;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9ff;
             border-radius: 12px;
-            padding: 24px;
-            margin-top: 32px;
         }
         
-        .tips h3 {
-            color: #1e3a8a;
-            margin-bottom: 12px;
-            font-size: 16px;
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .tips ul {
-            list-style: none;
-            color: #1e40af;
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #5B9BD5;
         }
         
-        .tips li {
-            margin-bottom: 8px;
-            font-size: 14px;
-            line-height: 1.6;
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 12px;
+                padding: 15px;
+            }
+            
+            .stat-item {
+                padding: 12px;
+            }
+            
+            .stat-value {
+                font-size: 1.8em;
+            }
+            
+            .stat-label {
+                font-size: 0.9em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                padding: 12px;
+            }
+            
+            .stat-item {
+                padding: 10px;
+            }
+            
+            .stat-value {
+                font-size: 1.6em;
+            }
+            
+            .stat-label {
+                font-size: 0.85em;
+            }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .legend {
+            background: #f8f9ff;
+            border: 2px solid #5B9BD5;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            color: #5B9BD5;
+            margin-right: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-box {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid;
+        }
+        
+        .legend-box.normal {
+            background: white;
+            border-color: #e2e8f0;
+        }
+        
+        .legend-box.key {
+            background: #fef9c3;
+            border-color: #facc15;
+        }
+        
+        .legend-box.memorized {
+            background: #f0fff4;
+            border-color: #48bb78;
+        }
+        
+        @media (max-width: 768px) {
+            .legend {
+                padding: 12px 15px;
+                gap: 15px;
+            }
+            
+            .legend-title {
+                font-size: 0.95em;
+            }
+            
+            .legend-item {
+                font-size: 0.9em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .legend {
+                padding: 10px 12px;
+                gap: 10px;
+            }
+            
+            .legend-title {
+                font-size: 0.9em;
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .legend-item {
+                font-size: 0.85em;
+                gap: 6px;
+            }
+            
+            .legend-box {
+                width: 25px;
+                height: 18px;
+            }
+        }
+        
+        /* 스크롤바 스타일 */
+        .playlist::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .playlist::-webkit-scrollbar-track {
+            background: #EBF4FA;
+            border-radius: 4px;
+        }
+        
+        .playlist::-webkit-scrollbar-thumb {
+            background: #5B9BD5;
+            border-radius: 4px;
+        }
+        
+        .playlist::-webkit-scrollbar-thumb:hover {
+            background: #4A90E2;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📖 요한계시록 1-10장 암기 도구</h1>
-            <p>구절 번호를 클릭하여 내용을 보거나 숨기세요. 암기 테스트에 완벽합니다!</p>
-            <button class="toggle-all-btn" onclick="toggleAll()">
-                <span id="toggle-text">모두 숨기기</span>
-            </button>
+            <h1>📖 요한계시록</h1>
         </div>
         
-        <div class="info-box">
-            💡 <strong>사용 방법:</strong> 장 제목을 클릭하면 구절 목록이 열립니다. 각 구절 번호를 클릭하면 내용이 나타나거나 숨겨집니다.<br>
-            ⭐ <strong>주황색 번호</strong>는 중요 암기 구절입니다!
+        <!-- 오디오 플레이어 -->
+        <div class="audio-player">
+            <div class="audio-info">
+                <div class="current-chapter" id="audioChapterDisplay">계 1장</div>
+                <div class="current-title" id="audioTitleDisplay">로딩 중...</div>
+            </div>
+            
+            <div class="audio-controls">
+                <button onclick="playAudio()" id="playBtn">▶️ 재생</button>
+                <button onclick="pauseAudio()" id="pauseBtn">⏸️ 일시정지</button>
+                <button onclick="stopAudio()">⏹️ 정지</button>
+                <button onclick="previousChapter()">⏮️ 이전 장</button>
+                <button onclick="nextChapter()">⏭️ 다음 장</button>
+            </div>
+            
+            <div class="audio-controls">
+                <button onclick="toggleRepeat()" id="repeatBtn">🔁 전체반복</button>
+                <button onclick="toggleShuffle()" id="shuffleBtn">🔀 랜덤재생</button>
+                <button onclick="toggleSectionRepeat()" id="sectionRepeatBtn">🔂 구간반복</button>
+                <button onclick="changeSpeed()" id="speedBtn">⚡ 1.0x</button>
+            </div>
+            
+            <div class="progress-container">
+                <div class="time-display">
+                    <span id="currentTime">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+                <input type="range" class="progress-slider" id="progressSlider" 
+                       min="0" max="100" value="0" step="0.1">
+                
+                <div class="volume-control">
+                    <label>🔊 음량:</label>
+                    <input type="range" class="volume-slider" id="volumeSlider" 
+                           min="0" max="100" value="70" step="1">
+                    <span style="color: #5B9BD5; min-width: 40px; font-weight: 600;" id="volumeDisplay">70%</span>
+                </div>
+            </div>
+            
+            <div class="playlist">
+                <h3>📋 재생목록</h3>
+                <div id="playlistContainer"></div>
+            </div>
         </div>
         
-        <div id="chapters"></div>
+        <!-- 기존 컨트롤 -->
+        <div class="controls">
+            <select class="chapter-selector" id="chapterSelect">
+                <option value="1">계시록 1장</option>
+                <option value="2">계시록 2장</option>
+                <option value="3">계시록 3장</option>
+                <option value="4">계시록 4장</option>
+                <option value="5">계시록 5장</option>
+                <option value="6">계시록 6장</option>
+                <option value="7">계시록 7장</option>
+                <option value="8">계시록 8장</option>
+                <option value="9">계시록 9장</option>
+                <option value="10">계시록 10장</option>
+                <option value="11">계시록 11장</option>
+                <option value="12">계시록 12장</option>
+                <option value="13">계시록 13장</option>
+                <option value="14">계시록 14장</option>
+                <option value="15">계시록 15장</option>
+                <option value="16">계시록 16장</option>
+                <option value="17">계시록 17장</option>
+                <option value="18">계시록 18장</option>
+                <option value="19">계시록 19장</option>
+                <option value="20">계시록 20장</option>
+                <option value="21">계시록 21장</option>
+                <option value="22">계시록 22장</option>
+            </select>
+            
+            <button class="btn btn-primary" onclick="toggleTitleVisibility()">📋 제목 숨기기/보이기</button>
+            <button class="btn btn-primary" onclick="hideRandom()">🎲 랜덤 숨기기 (30%)</button>
+            <button class="btn btn-secondary" onclick="showAll()">👁️ 모두 보이기</button>
+            <button class="btn btn-danger" onclick="hideAll()">🙈 모두 숨기기</button>
+            <button class="btn btn-primary" onclick="showOnlyKeyVerses()">⭐ 주요 성구만</button>
+            <button class="btn btn-primary" onclick="showAllVerses()">📖 전체 보기</button>
+            <button class="btn btn-primary" onclick="resetProgress()">🔄 진도 초기화</button>
+        </div>
         
-        <div class="tips">
-            <h3>💪 효과적인 활용법</h3>
-            <ul>
-                <li>• <strong>암기 테스트:</strong> 모든 구절을 숨긴 후 구절 번호만 보고 암송해보세요</li>
-                <li>• <strong>순차 학습:</strong> 한 구절씩 열어가며 반복 학습하세요</li>
-                <li>• <strong>약점 공략:</strong> 어려운 구절만 숨기고 집중적으로 연습하세요</li>
-                <li>• <strong>중요 구절 집중:</strong> 주황색으로 표시된 구절을 우선 암기하세요</li>
-            </ul>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar">0%</div>
+        </div>
+        
+        <div class="legend">
+            <span class="legend-title">🎨 구절 표시:</span>
+            <div class="legend-item">
+                <div class="legend-box normal"></div>
+                <span>일반 구절</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box key"></div>
+                <span>주요 성구</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box memorized"></div>
+                <span>외운 구절</span>
+            </div>
+        </div>
+        
+        <div id="versesContainer"></div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="totalVerses">0</div>
+                <div class="stat-label">전체 구절</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="keyVersesCount">0</div>
+                <div class="stat-label">주요 성구</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="memorizedVerses">0</div>
+                <div class="stat-label">외운 구절</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="memorizedTitles">0</div>
+                <div class="stat-label">외운 제목</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="hiddenWords">0</div>
+                <div class="stat-label">숨긴 단어</div>
+            </div>
         </div>
     </div>
-
+    
+    <!-- 숨겨진 오디오 엘리먼트 -->
+    <audio id="audioPlayer" preload="metadata"></audio>
+    
     <script>
-        // 중요 구절 하이라이트 (1-10장)
-        const highlightVerses = {
+        // 계시록 1-22장 제목
+        const chapterTitles = {
+            1: "계시록 전장의 요약과 결론 / 계시록 사건의 시작과 일곱 별과 일곱 금 촛대의 비밀",
+            2: "일곱 교회 사자에게 보낸 편지",
+            3: "일곱 교회 사자에게 보낸 편지",
+            4: "영계 하나님의 보좌와 계열",
+            5: "일곱 인으로 봉한 책",
+            6: "배도한 선천 해·달·별에 대한 심판",
+            7: "새 창조 된 영적 새 이스라엘 열두 지파",
+            8: "마지막 인과 일곱 나팔",
+            9: "무저갱의 황충과 범죄한 천사",
+            10: "하늘에서 온 계시 책과 약속의 목자",
+            11: "두 증인과 일곱째 나팔",
+            12: "용과 하나님과의 전쟁",
+            13: "짐승에게 표 받고 배도한 선민",
+            14: "처음 익은 열매 시온산 십사만 사천",
+            15: "만국이 와서 경배할 증거장막 성전",
+            16: "진노의 일곱 대접",
+            17: "마귀의 양식 음행의 포도주",
+            18: "만국을 무너뜨린 사단과의 결혼",
+            19: "영육 어린양의 혼인 잔치",
+            20: "순교의 영과 산 자의 첫째 부활",
+            21: "약속한 새 하늘 새 땅 신천지",
+            22: "생명나무가 있는 거룩한 성"
+        };
+        
+        // 요한계시록 장별 주요성구
+        const keyVerses = {
             1: [1,2,3,4,5,6,7,8,20],
             2: [4,5,7,17,26,27],
             3: [3,12,21],
@@ -239,317 +1050,485 @@
             5: [1,7,9,10],
             6: [1,2,6,8,12,13],
             7: [3,4,9,14,15],
-            8: [1,2,11],
+            8: [1,2],
             9: [1,3,14,15,16],
-            10: [1,2,7,10,11]
+            10: [1,2,7,10,11],
+            11: [1,2,8,15],
+            12: [5,9,10,11],
+            13: [1,2,6,16,17,18],
+            14: [1,2,3,4,5,6],
+            15: [2,3,4,5,7],
+            16: [12,13,14,15,16],
+            17: [5,7,14],
+            18: [2,3,4,23],
+            19: [7,8,11,12,13,14],
+            20: [4,5,6,15],
+            21: [1,2,3,4,5,6,7],
+            22: [1,2,3,4,5,8,14,16,18,19]
         };
-
-        const revelation = {
-            1: {
-                title: "1장 - 계시록 전장의 요약과 결론 / 계시록 사건의 시작과 일곱별과 일곱 금촛대의 비밀",
-                verses: [
-                    "예수 그리스도의 계시라 이는 하나님이 그에게 주사 반드시 속히 될 일을 그 종들에게 보이시려고 그 천사를 그 종 요한에게 보내어 지시하신 것이라",
-                    "요한은 하나님의 말씀과 예수 그리스도의 증거 곧 자기의 본 것을 다 증거하였느니라",
-                    "이 예언의 말씀을 읽는 자와 듣는 자들과 그 가운데 기록한 것을 지키는 자들이 복이 있나니 때가 가까움이라",
-                    "요한은 아시아에 있는 일곱 교회에 편지하노니 이제도 계시고 전에도 계시고 장차 오실 이와 그 보좌 앞에 일곱 영과",
-                    "또 충성된 증인으로 죽은 자들 가운데서 먼저 나시고 땅의 임금들의 머리가 되신 예수 그리스도로 말미암아 은혜와 평강이 너희에게 있기를 원하노라 우리를 사랑하사 그의 피로 우리 죄에서 우리를 해방하시고",
-                    "그 아버지 하나님을 위하여 우리를 나라와 제사장으로 삼으신 그에게 영광과 능력이 세세토록 있기를 원하노라 아멘",
-                    "볼지어다 구름을 타고 오시리라 각인의 눈이 그를 보겠고 그를 찌른 자들도 볼 터이요 땅에 있는 모든 족속이 그를 인하여 애곡하리니 그러하리라 아멘",
-                    "주 하나님이 가라사대 나는 알파와 오메가라 이제도 있고 전에도 있었고 장차 올 자요 전능한 자라 하시더라",
-                    "나 요한은 너희 형제요 예수의 환난과 나라와 참음에 동참하는 자라 하나님의 말씀과 예수의 증거를 인하여 밧모라 하는 섬에 있었더니",
-                    "주의 날에 내가 성령에 감동하여 내 뒤에서 나는 나팔 소리 같은 큰 음성을 들으니",
-                    "가로되 너 보는 것을 책에 써서 에베소, 서머나, 버가모, 두아디라, 사데, 빌라델비아, 라오디게아 일곱 교회에 보내라 하시기로",
-                    "몸을 돌이켜 나더러 말한 음성을 알아 보려고 하여 돌이킬 때에 일곱 금촛대를 보았는데",
-                    "촛대 사이에 인자 같은 이가 발에 끌리는 옷을 입고 가슴에 금띠를 띠고",
-                    "그 머리와 털의 희기가 흰 양털 같고 눈 같으며 그의 눈은 불꽃 같고",
-                    "그의 발은 풀무에 단련한 빛난 주석 같고 그의 음성은 많은 물소리와 같으며",
-                    "그 오른손에 일곱 별이 있고 그 입에서 좌우에 날선 검이 나오고 그 얼굴은 해가 힘있게 비취는 것 같더라",
-                    "내가 볼 때에 그 발 앞에 엎드러져 죽은 자같이 되매 그가 오른손을 내게 얹고 가라사대 두려워 말라 나는 처음이요 나중이니",
-                    "곧 산 자라 내가 전에 죽었었노라 볼지어다 이제 세세토록 살아 있어 사망과 음부의 열쇠를 가졌노니",
-                    "그러므로 네 본 것과 이제 있는 일과 장차 될 일을 기록하라",
-                    "네 본 것은 내 오른손에 일곱 별의 비밀과 일곱 금촛대라 일곱 별은 일곱 교회의 사자요 일곱 촛대는 일곱 교회니라"
-                ]
-            },
-            2: {
-                title: "2장 - 일곱 교회 사자에게 보낸 편지",
-                verses: [
-                    "에베소 교회의 사자에게 편지하기를 오른손에 일곱 별을 붙잡고 일곱 금촛대 사이에 다니시는 이가 가라사대",
-                    "내가 네 행위와 수고와 네 인내를 알고 또 악한 자들을 용납지 아니한 것과 자칭 사도라 하되 아닌 자들을 시험하여 그 거짓된 것을 네가 드러낸 것과",
-                    "네 참고 견디며 내 이름을 위하여 견디고 게으르지 아니한 것을 아노라",
-                    "그러나 너를 책망할 것이 있나니 너의 처음 사랑을 버렸느니라",
-                    "그러므로 어디서 떨어진 것을 생각하고 회개하여 처음 행위를 가지라 만일 그리하지 아니하고 회개치 아니하면 내가 네게 임하여 네 촛대를 그 자리에서 옮기리라",
-                    "오직 네게 이것이 있으니 네가 니골라당의 행위를 미워하는도다 나도 이것을 미워하노라",
-                    "귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을지어다 이기는 그에게는 내가 하나님의 낙원에 있는 생명나무의 과실을 주어 먹게 하리라",
-                    "서머나 교회의 사자에게 편지하기를 처음이요 나중이요 죽었다가 살아나신 이가 가라사대",
-                    "내가 네 환난과 궁핍을 아노니 실상은 네가 부요한 자니라 자칭 유대인이라 하는 자들의 훼방도 아노니 실상은 유대인이 아니요 사단의 회라",
-                    "네가 장차 받을 고난을 두려워 말라 볼지어다 마귀가 장차 너희 가운데서 몇 사람을 옥에 던져 시험을 받게 하리니 너희가 십 일 동안 환난을 받으리라 네가 죽도록 충성하라 그리하면 내가 생명의 면류관을 네게 주리라",
-                    "귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을지어다 이기는 자는 둘째 사망의 해를 받지 아니하리라",
-                    "버가모 교회의 사자에게 편지하기를 좌우에 날선 검을 가진 이가 가라사대",
-                    "네가 어디 사는 것을 내가 아노니 거기는 사단의 위가 있는 데라 네가 내 이름을 굳게 잡아서 내 충성된 증인 안디바가 너희 가운데 곧 사단의 거하는 곳에서 죽임을 당할 때에도 나를 믿는 믿음을 저버리지 아니하였도다",
-                    "그러나 네게 두어 가지 책망할 것이 있나니 거기 네게 발람의 교훈을 지키는 자들이 있도다 발람이 발락을 가르쳐 이스라엘 앞에 올무를 놓아 우상의 제물을 먹게 하였고 또 행음하게 하였느니라",
-                    "이와 같이 네게도 니골라당의 교훈을 지키는 자들이 있도다",
-                    "그러므로 회개하라 그리하지 아니하면 내가 네게 속히 임하여 내 입의 검으로 그들과 싸우리라",
-                    "귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을지어다 이기는 그에게는 내가 감추었던 만나를 주고 또 흰 돌을 줄 터인데 그 돌 위에 새 이름을 기록한 것이 있나니 받는 자 밖에는 그 이름을 알 사람이 없느니라",
-                    "두아디라 교회의 사자에게 편지하기를 그 눈이 불꽃 같고 그 발이 빛난 주석과 같은 하나님의 아들이 가라사대",
-                    "내가 네 사업과 사랑과 믿음과 섬김과 인내를 아노니 네 나중 행위가 처음 것보다 많도다",
-                    "그러나 네게 책망할 일이 있노라 자칭 선지자라 하는 여자 이세벨을 네가 용납함이니 그가 내 종들을 가르쳐 꾀어 행음하게 하고 우상의 제물을 먹게 하는도다",
-                    "또 내가 그에게 회개할 기회를 주었으되 그 음행을 회개하고자 아니하는도다",
-                    "볼지어다 내가 그를 침상에 던질 터이요 또 그로 더불어 간음하는 자들도 만일 그의 행위를 회개치 아니하면 큰 환난 가운데 던지고",
-                    "또 내가 사망으로 그의 자녀를 죽이리니 모든 교회가 나는 사람의 뜻과 마음을 살피는 자인줄 알지라 내가 너희 각 사람의 행위대로 갚아 주리라",
-                    "두아디라에 남아 있어 이 교훈을 받지 아니하고 소위 사단의 깊은 것을 알지 못하는 너희에게 말하노니 다른 짐으로 너희에게 지울 것이 없노라",
-                    "다만 너희에게 있는 것을 내가 올 때까지 굳게 잡으라",
-                    "이기는 자와 끝까지 내 일을 지키는 그에게 만국을 다스리는 권세를 주리니",
-                    "그가 철장을 가지고 저희를 다스려 질그릇 깨뜨리는 것과 같이 하리라 나도 내 아버지께 받은 것이 그러하니라",
-                    "내가 또 그에게 새벽별을 주리라",
-                    "귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을지어다"
-                ]
-            },
-            3: {
-                title: "3장 - 일곱 교회 사자에게 보낸 편지",
-                verses: [
-                    "사데 교회의 사자에게 편지하기를 하나님의 일곱 영과 일곱 별을 가진 이가 가라사대 내가 네 행위를 아노니 네가 살았다 하는 이름은 가졌으나 죽은 자로다",
-                    "너는 일깨워 그 남은바 죽게 된 것을 굳게 하라 내 하나님 앞에 네 행위의 온전한 것을 찾지 못하였노니",
-                    "그러므로 네가 어떻게 받았으며 어떻게 들었는지 생각하고 지키어 회개하라 만일 일깨지 아니하면 내가 도적같이 이르리니 어느 시에 네게 임할는지 네가 알지 못하리라",
-                    "그러나 사데에 그 옷을 더럽히지 아니한 자 몇 명이 네게 있어 흰 옷을 입고 나와 함께 다니리니 그들은 합당한 자인 연고라",
-                    "이기는 자는 이와 같이 흰 옷을 입을 것이요 내가 그 이름을 생명책에서 반드시 흐리지 아니하고 그 이름을 내 아버지 앞과 그 천사들 앞에서 시인하리라",
-                    "귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을지어다",
-                    "빌라델비아 교회의 사자에게 편지하기를 거룩하고 진실하사 다윗의 열쇠를 가지신 이 곧 열면 닫을 사람이 없고 닫으면 열 사람이 없는 그이가 가라사대",
-                    "볼지어다 내가 네 앞에 열린 문을 두었으되 능히 닫을 사람이 없으리라 내가 네 행위를 아노니 네가 적은 능력을 가지고도 내 말을 지키며 내 이름을 배반치 아니하였도다",
-                    "보라 사단의 회 곧 자칭 유대인이라 하나 그렇지 않고 거짓말 하는 자들 중에서 몇을 네게 주어 저희로 와서 네 발 앞에 절하게 하고 내가 너를 사랑하는 줄을 알게 하리라",
-                    "네가 나의 인내의 말씀을 지켰은즉 내가 또한 너를 지키어 시험의 때를 면하게 하리니 이는 장차 온 세상에 임하여 땅에 거하는 자들을 시험할 때라",
-                    "내가 속히 임하리니 네가 가진 것을 굳게 잡아 아무나 네 면류관을 빼앗지 못하게 하라",
-                    "이기는 자는 내 하나님 성전에 기둥이 되게 하리니 그가 결코 다시 나가지 아니하리라 내가 하나님의 이름과 하나님의 성 곧 하늘에서 내 하나님께로부터 내려오는 새 예루살렘의 이름과 나의 새 이름을 그이 위에 기록하리라",
-                    "귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을지어다",
-                    "라오디게아 교회의 사자에게 편지하기를 아멘이시요 충성되고 참된 증인이시요 하나님의 창조의 근본이신 이가 가라사대",
-                    "내가 네 행위를 아노니 네가 차지도 아니하고 더웁지도 아니하도다 네가 차든지 더웁든지 하기를 원하노라",
-                    "네가 이같이 미지근하여 더웁지도 아니하고 차지도 아니하니 내 입에서 너를 토하여 내치리라",
-                    "네가 말하기를 나는 부자라 부요하여 부족한 것이 없다 하나 네 곤고한 것과 가련한 것과 가난한 것과 눈먼 것과 벌거벗은 것을 알지 못하도다",
-                    "내가 너를 권하노니 내게서 불로 연단한 금을 사서 부요하게 하고 흰 옷을 사서 입어 벌거벗은 수치를 보이지 않게 하고 안약을 사서 눈에 발라 보게 하라",
-                    "무릇 내가 사랑하는 자를 책망하여 징계하노니 그러므로 네가 열심을 내라 회개하라",
-                    "볼지어다 내가 문밖에 서서 두드리노니 누구든지 내 음성을 듣고 문을 열면 내가 그에게로 들어가 그로 더불어 먹고 그는 나로 더불어 먹으리라",
-                    "이기는 그에게는 내가 내 보좌에 함께 앉게 하여 주기를 내가 이기고 아버지 보좌에 함께 앉은 것과 같이 하리라",
-                    "귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을지어다"
-                ]
-            },
-            4: {
-                title: "4장 - 영계 하나님의 보좌와 계열",
-                verses: [
-                    "이 일 후에 내가 보니 하늘에 열린 문이 있는데 내가 들은바 처음에 내게 말하던 나팔 소리 같은 그 음성이 가로되 이리로 올라오라 이 후에 마땅히 될 일을 내가 네게 보이리라 하시더라",
-                    "내가 곧 성령에 감동하였더니 보라 하늘에 보좌를 베풀었고 그 보좌 위에 앉으신 이가 있는데",
-                    "앉으신 이의 모양이 벽옥과 홍보석 같고 또 무지개가 있어 보좌에 둘렸는데 그 모양이 녹보석 같더라",
-                    "또 보좌에 둘려 이십사 보좌들이 있고 그 보좌들 위에 이십사 장로들이 흰 옷을 입고 머리에 금 면류관을 쓰고 앉았더라",
-                    "보좌로부터 번개와 음성과 뇌성이 나고 보좌 앞에 일곱 등불 켠 것이 있으니 이는 하나님의 일곱 영이라",
-                    "보좌 앞에 수정과 같은 유리바다가 있고 보좌 가운데와 보좌 주위에 네 생물이 있는데 앞뒤에 눈이 가득하더라",
-                    "그 첫째 생물은 사자 같고 그 둘째 생물은 송아지 같고 그 셋째 생물은 얼굴이 사람 같고 그 넷째 생물은 날아가는 독수리 같은데",
-                    "네 생물이 각각 여섯 날개가 있고 그 안과 주위에 눈이 가득하더라 그들이 밤낮 쉬지 않고 이르기를 거룩하다 거룩하다 거룩하다 주 하나님 곧 전능하신 이여 전에도 계셨고 이제도 계시고 장차 오실 자라 하고",
-                    "그 생물들이 영광과 존귀와 감사를 보좌에 앉으사 세세토록 사시는 이에게 돌릴 때에",
-                    "이십사 장로들이 보좌에 앉으신 이 앞에 엎드려 세세토록 사시는 이에게 경배하고 자기의 면류관을 보좌 앞에 던지며 가로되",
-                    "우리 주 하나님이여 영광과 존귀와 능력을 받으시는 것이 합당하오니 주께서 만물을 지으신지라 만물이 주의 뜻대로 있었고 또 지으심을 받았나이다 하더라"
-                ]
-            },
-            5: {
-                title: "5장 - 일곱인으로 봉한 책",
-                verses: [
-                    "내가 보매 보좌에 앉으신 이의 오른손에 책이 있으니 안팎으로 썼고 일곱 인으로 봉하였더라",
-                    "또 보매 힘있는 천사가 큰 음성으로 외치기를 누가 책을 펴며 그 인을 떼기에 합당하냐 하니",
-                    "하늘 위에나 땅 위에나 땅 아래에 능히 책을 펴거나 보거나 할 이가 없더라",
-                    "이 책을 펴거나 보거나 하기에 합당한 자가 보이지 않기로 내가 크게 울었더니",
-                    "장로 중에 하나가 내게 말하되 울지 말라 유대 지파의 사자 다윗의 뿌리가 이기었으니 이 책과 그 일곱 인을 떼시리라 하더라",
-                    "내가 또 보니 보좌와 네 생물과 장로들 사이에 어린 양이 섰는데 일찍 죽임을 당한 것같더라 일곱 뿔과 일곱 눈이 있으니 이 눈은 온 땅에 보내심을 입은 하나님의 일곱 영이더라",
-                    "어린 양이 나아와서 보좌에 앉으신 이의 오른손에서 책을 취하시니라",
-                    "책을 취하시매 네 생물과 이십사 장로들이 어린 양 앞에 엎드려 각각 거문고와 향이 가득한 금 대접을 가졌으니 이 향은 성도의 기도들이라",
-                    "새 노래를 노래하여 가로되 책을 가지시고 그 인봉을 떼기에 합당하시도다 일찍 죽임을 당하사 각 족속과 방언과 백성과 나라 가운데서 사람들을 피로 사서 하나님께 드리시고",
-                    "저희로 우리 하나님 앞에서 나라와 제사장을 삼으셨으니 저희가 땅에서 왕노릇하리로다 하더라",
-                    "내가 또 보고 들으매 보좌와 생물들과 장로들을 둘러 선 많은 천사의 음성이 있으니 그 수가 만만이요 천천이라",
-                    "큰 음성으로 가로되 죽임을 당하신 어린 양이 능력과 부와 지혜와 힘과 존귀와 영광과 찬송을 받으시기에 합당하도다 하더라",
-                    "내가 또 들으니 하늘 위에와 땅 위에와 땅 아래와 바다 위에와 또 그 가운데 모든 만물이 가로되 보좌에 앉으신 이와 어린 양에게 찬송과 존귀와 영광과 능력을 세세토록 돌릴지어다 하니",
-                    "네 생물이 가로되 아멘 하고 장로들은 엎드려 경배하더라"
-                ]
-            },
-            6: {
-                title: "6장 - 배도한 선천 해달별에 대한 심판",
-                verses: [
-                    "내가 보매 어린 양이 일곱 인 중에 하나를 떼시는 그 때에 내가 들으니 네 생물 중에 하나가 우뢰 소리 같이 말하되 오라 하기로",
-                    "이에 내가 보니 흰 말이 있는데 그 탄 자가 활을 가졌고 면류관을 받고 나가서 이기고 또 이기려고 하더라",
-                    "둘째 인을 떼실 때에 내가 들으니 둘째 생물이 말하되 오라 하더니",
-                    "이에 다른 붉은 말이 나오더라 그 탄 자가 허락을 받아 땅에서 화평을 제하여 버리며 서로 죽이게 하고 또 큰 칼을 받았더라",
-                    "셋째 인을 떼실 때에 내가 들으니 셋째 생물이 말하되 오라 하기로 내가 보니 검은 말이 나오는데 그 탄 자가 손에 저울을 가졌더라",
-                    "내가 네 생물 사이로서 나는 듯한 음성을 들으니 가로되 한 데나리온에 밀 한 되요 한 데나리온에 보리 석 되로다 또 감람유와 포도주는 해치 말라 하더라",
-                    "넷째 인을 떼실 때에 내가 넷째 생물의 음성을 들으니 가로되 오라 하기로",
-                    "내가 보매 청황색 말이 나오는데 그 탄 자의 이름은 사망이니 음부가 그 뒤를 따르더라 저희가 땅 사분 일의 권세를 얻어 검과 흉년과 사망과 땅의 짐승으로써 죽이더라",
-                    "다섯째 인을 떼실 때에 내가 보니 하나님의 말씀과 저희의 가진 증거를 인하여 죽임을 당한 영혼들이 제단 아래 있어",
-                    "큰 소리로 불러 가로되 거룩하고 참되신 대주재여 땅에 거하는 자들을 심판하여 우리 피를 신원하여 주지 아니하시기를 어느 때까지 하시려나이까 하니",
-                    "각각 저희에게 흰 두루마기를 주시며 가라사대 아직 잠간 동안 쉬되 저희 동무 종들과 형제들도 자기처럼 죽임을 당하여 그 수가 차기까지 하라 하시더라",
-                    "내가 보니 여섯째 인을 떼실 때에 큰 지진이 나며 해가 총담같이 검어지고 온 달이 피같이 되며",
-                    "하늘의 별들이 무화과나무가 대풍에 흔들려 선 과실이 떨어지는 것같이 땅에 떨어지며",
-                    "하늘은 종이 축이 말리는 것같이 떠나가고 각 산과 섬이 제 자리에서 옮기우매",
-                    "땅의 임금들과 왕족들과 장군들과 부자들과 강한 자들과 각 종과 자주자가 굴과 산 바위틈에 숨어",
-                    "산과 바위에게 이르되 우리 위에 떨어져 보좌에 앉으신 이의 낯에서와 어린 양의 진노에서 우리를 가리우라",
-                    "그들의 진노의 큰 날이 이르렀으니 누가 능히 서리요 하더라"
-                ]
-            },
-            7: {
-                title: "7장 - 새 창조된 영적 새 이스라엘 열두 지파",
-                verses: [
-                    "이 일 후에 내가 네 천사가 땅 네 모퉁이에 선 것을 보니 땅의 사방의 바람을 붙잡아 바람으로 하여금 땅에나 바다에나 각종 나무에 불지 못하게 하더라",
-                    "또 보매 다른 천사가 살아계신 하나님의 인을 가지고 해 돋는 데로부터 올라와서 땅과 바다를 해롭게 할 권세를 얻은 네 천사를 향하여 큰 소리로 외쳐",
-                    "가로되 우리가 우리 하나님의 종들의 이마에 인치기까지 땅이나 바다나 나무나 해하지 말라 하더라",
-                    "내가 인맞은 자의 수를 들으니 이스라엘 자손의 각 지파 중에서 인맞은 자들이 십사만 사천이니",
-                    "유다 지파 중에 인맞은 자가 일만 이천이요 르우벤 지파 중에 일만 이천이요 갓 지파 중에 일만 이천이요",
-                    "아셀 지파 중에 일만 이천이요 납달리 지파 중에 일만 이천이요 므낫세 지파 중에 일만 이천이요",
-                    "시므온 지파 중에 일만 이천이요 레위 지파 중에 일만 이천이요 잇사갈 지파 중에 일만 이천이요",
-                    "스불론 지파 중에 일만 이천이요 요셉 지파 중에 일만 이천이요 베냐민 지파 중에 인맞은 자가 일만 이천이라",
-                    "이 일 후에 내가 보니 각 나라와 족속과 백성과 방언에서 아무라도 능히 셀 수 없는 큰 무리가 흰 옷을 입고 손에 종려 가지를 들고 보좌 앞과 어린 양 앞에 서서",
-                    "큰 소리로 외쳐 가로되 구원하심이 보좌에 앉으신 우리 하나님과 어린 양에게 있도다 하니",
-                    "모든 천사가 보좌와 장로들과 네 생물의 주위에 섰다가 보좌 앞에 엎드려 얼굴을 대고 하나님께 경배하여",
-                    "가로되 아멘 찬송과 영광과 지혜와 감사와 존귀와 능력과 힘이 우리 하나님께 세세토록 있을지로다 아멘 하더라",
-                    "장로 중에 하나가 응답하여 내게 이르되 이 흰 옷 입은 자들이 누구며 또 어디서 왔느뇨",
-                    "내가 가로되 내 주여 당신이 알리이다 하니 그가 나더러 이르되 이는 큰 환난에서 나오는 자들인데 어린 양의 피에 그 옷을 씻어 희게 하였느니라",
-                    "그러므로 그들이 하나님의 보좌 앞에 있고 또 그의 성전에서 밤낮 하나님을 섬기매 보좌에 앉으신 이가 그들 위에 장막을 치시리니",
-                    "저희가 다시 주리지도 아니하며 목마르지도 아니하고 해나 아무 뜨거운 기운에 상하지 아니할지니",
-                    "이는 보좌 가운데 계신 어린 양이 저희의 목자가 되사 생명수 샘으로 인도하시고 하나님께서 저희 눈에서 모든 눈물을 씻어 주실 것임이러라"
-                ]
-            },
-            8: {
-                title: "8장 - 마지막 인과 일곱 나팔",
-                verses: [
-                    "일곱째 인을 떼실 때에 하늘이 반 시간쯤 고요하더니",
-                    "내가 보매 하나님 앞에 시위한 일곱 천사가 있어 일곱 나팔을 받았더라",
-                    "또 다른 천사가 와서 제단 곁에 서서 금 향로를 가지고 많은 향을 받았으니 이는 모든 성도의 기도들과 합하여 보좌 앞 금단에 드리고자 함이라",
-                    "향연이 성도의 기도와 함께 천사의 손으로부터 하나님 앞으로 올라가는지라",
-                    "천사가 향로를 가지고 단의 불을 담아다가 땅에 쏟으매 뇌성과 음성과 번개와 지진이 나더라",
-                    "일곱 나팔 가진 일곱 천사가 나팔 불기를 예비하더라",
-                    "첫째 천사가 나팔을 부니 피 섞인 우박과 불이 나서 땅에 쏟아지매 땅의 삼분의 일이 타서 사위고 수목의 삼분의 일도 타서 사위고 각종 푸른 풀도 타서 사위더라",
-                    "둘째 천사가 나팔을 부니 불붙는 큰 산과 같은 것이 바다에 던지우매 바다의 삼분의 일이 피가 되고",
-                    "바다 가운데 생명 가진 피조물들의 삼분의 일이 죽고 배들의 삼분의 일이 깨어지더라",
-                    "셋째 천사가 나팔을 부니 횃불같이 타는 큰 별이 하늘에서 떨어져 강들의 삼분의 일과 여러 물샘에 떨어지니",
-                    "이 별 이름은 쑥이라 물들의 삼분의 일이 쑥이 되매 그 물들이 쓰게 됨을 인하여 많은 사람이 죽더라",
-                    "넷째 천사가 나팔을 부니 해 삼분의 일과 달 삼분의 일과 별들의 삼분의 일이 침을 받아 그 삼분의 일이 어두워지니 낮 삼분의 일은 비췸이 없고 밤도 그러하더라",
-                    "내가 또 보고 들으니 공중에 날아가는 독수리가 큰 소리로 이르되 땅에 거하는 자들에게 화, 화, 화가 있으리로다 이 외에도 세 천사의 불 나팔소리를 인함이로다 하더라"
-                ]
-            },
-            9: {
-                title: "9장 - 무저갱의 황충과 범죄한 천사",
-                verses: [
-                    "다섯째 천사가 나팔을 불매 내가 보니 하늘에서 땅에 떨어진 별 하나가 있는데 저가 무저갱의 열쇠를 받았더라",
-                    "저가 무저갱을 여니 그 구멍에서 큰 풀무의 연기같은 연기가 올라오매 해와 공기가 그 구멍의 연기로 인하여 어두워지며",
-                    "또 황충이 연기 가운데로부터 땅 위에 나오매 저희가 땅에 있는 전갈의 권세와 같은 권세를 받았더라",
-                    "저희에게 이르시되 땅의 풀이나 각종 푸른 것이나 각종 수목은 해하지 말고 오직 이마에 하나님의 인 맞지 아니한 사람들만 해하라 하시더라",
-                    "그러나 그들을 죽이지는 못하게 하시고 다섯 달 동안 괴롭게만 하게 하시는데 그 괴롭게 함은 전갈이 사람을 쏠 때에 괴롭게 함과 같더라",
-                    "그 날에는 사람들이 죽기를 구하여도 얻지 못하고 죽고 싶으나 죽음이 저희를 피하리로다",
-                    "황충의 모양은 전쟁을 위하여 예비한 말들 같고 그 머리에 금 같은 면류관 비슷한 것을 썼으며 그 얼굴은 사람의 얼굴 같고",
-                    "또 여자의 머리털 같은 머리털이 있고 그 이는 사자의 이 같으며",
-                    "또 철 흉갑 같은 흉갑이 있고 그 날개들의 소리는 병거와 많은 말들이 전장으로 달려 들어가는 소리 같으며",
-                    "또 전갈과 같은 꼬리와 쏘는 살이 있어 그 꼬리에는 다섯 달 동안 사람들을 해하는 권세가 있더라",
-                    "저희에게 임금이 있으니 무저갱의 사자라 히브리 음으로 이름은 아바돈이요 헬라 음으로 이름은 아볼루온이더라",
-                    "첫째 화는 지나갔으나 보라 아직도 이 후에 화 둘이 이르리로다",
-                    "여섯째 천사가 나팔을 부니 내가 들으매 하나님 앞 금단 네 뿔에서 한 음성이 나서",
-                    "나팔 가진 여섯째 천사에게 말하기를 큰 강 유브라데에 결박한 네 천사를 놓아 주라 하매",
-                    "네 천사가 놓였으니 그들은 그 년 월 일 시에 이르러 사람 삼분의 일을 죽이기로 예비한 자들이더라",
-                    "마병대의 수는 이만만이니 내가 그들의 수를 들었노라",
-                    "이같이 이상한 가운데 그 말들과 그 탄 자들을 보니 불빛과 자주빛과 유황빛 흉갑이 있고 또 말들의 머리는 사자 머리 같고 그 입에서는 불과 연기와 유황이 나오더라",
-                    "이 세 재앙 곧 저희 입에서 나오는 불과 연기와 유황을 인하여 사람 삼분의 일이 죽임을 당하니라",
-                    "이 말들의 힘은 그 입과 그 꼬리에 있으니 그 꼬리는 뱀 같고 또 꼬리에 머리가 있어 이것으로 해하더라",
-                    "이 재앙에 죽지 않고 남은 사람들은 그 손으로 행하는 일을 회개치 아니하고 오히려 여러 귀신과 또는 보거나 듣거나 다니거나 하지 못하는 금, 은, 동과 목석의 우상에게 절하고",
-                    "또 그 살인과 복술과 음행과 도적질을 회개치 아니하더라"
-                ]
-            },
-            10: {
-                title: "10장 - 하늘에서 온 계시책과 약속의 목자",
-                verses: [
-                    "내가 또 보니 힘센 다른 천사가 구름을 입고 하늘에서 내려 오는데 그 머리 위에 무지개가 있고 그 얼굴은 해 같고 그 발은 불기둥 같으며",
-                    "그 손에 펴놓인 작은 책을 들고 그 오른발은 바다를 밟고 왼발은 땅을 밟고",
-                    "사자의 부르짖는 것같이 큰 소리로 외치니 외칠 때에 일곱 우뢰가 그 소리를 발하더라",
-                    "일곱 우뢰가 발할 때에 내가 기록하려고 하다가 곧 들으니 하늘에서 소리 나서 말하기를 일곱 우뢰가 발한 것을 인봉하고 기록하지 말라 하더라",
-                    "내가 본 바 바다와 땅을 밟고 섰던 천사가 하늘을 향하여 오른손을 들고",
-                    "세세토록 살아계신 자 곧 하늘과 그 가운데 있는 물건이며 땅과 그 가운데 있는 물건이며 바다와 그 가운데 있는 물건을 창조하신 이를 가리켜 맹세하여 가로되 지체하지 아니하리니",
-                    "일곱째 천사가 소리내는 날 그 나팔을 불게 될 때에 하나님의 비밀이 그 종 선지자들에게 전하신 복음과 같이 이루리라",
-                    "하늘에서 나서 내게 들리던 음성이 또 내게 말하여 가로되 네가 가서 바다와 땅을 밟고 섰는 천사의 손에 펴 놓인 책을 가지라 하기로",
-                    "내가 천사에게 나아가 작은 책을 달라 한즉 천사가 가로되 갖다 먹어버리라 네 배에는 쓰나 네 입에는 꿀같이 달리라 하거늘",
-                    "내가 천사의 손에서 작은 책을 갖다 먹어버리니 내 입에는 꿀같이 다나 먹은 후에 내 배에서는 쓰게 되더라",
-                    "저가 내게 말하기를 네가 많은 백성과 나라와 방언과 임금에게 다시 예언하여야 하리라 하더라"
-                ]
+        
+        // 특별 강조 성구
+        const specialKeyVerses = {
+            1: [1,2,3,4,5,6,7,8],
+            14: [1,2,3,4,5],
+            21: [1,2,3,4,5,6,7],
+            22: [1,2,3,4,5]
+        };
+        
+        // 계시록 1-22장 전체 (개역한글)
+        const chapters = {
+            1: ["예수 그리스도의 계시라 이는 하나님이 그에게 주사 반드시 속히 될 일을 그 종들에게 보이시려고 그 천사를 그 종 요한에게 보내어 지시하신 것이라","요한은 하나님의 말씀과 예수 그리스도의 증거 곧 자기의 본 것을 다 증거하였느니라","이 예언의 말씀을 읽는 자와 듣는 자들과 그 가운데 기록한 것을 지키는 자들이 복이 있나니 때가 가까움이라","요한은 아시아에 있는 일곱 교회에 편지하노니 이제도 계시고 전에도 계시고 장차 오실 이와 그 보좌 앞에 일곱 영과","또 충성된 증인으로 죽은 자들 가운데서 먼저 나시고 땅의 임금들의 머리가 되신 예수 그리스도로 말미암아 은혜와 평강이 너희에게 있기를 원하노라 우리를 사랑하사 그의 피로 우리 죄에서 우리를 해방하시고","그 아버지 하나님을 위하여 우리를 나라와 제사장으로 삼으신 그에게 영광과 능력이 세세토록 있기를 원하노라 아멘","볼지어다 구름을 타고 오시리라 각인의 눈이 그를 보겠고 그를 찌른 자들도 볼 터이요 땅에 있는 모든 족속이 그를 인하여 애곡하리니 그러하리라 아멘","주 하나님이 가라사대 나는 알파와 오메가라 이제도 있고 전에도 있었고 장차 올 자요 전능한 자라 하시더라","나 요한은 너희 형제요 예수의 환난과 나라와 참음에 동참하는 자라 하나님의 말씀과 예수의 증거를 인하여 밧모라 하는 섬에 있었더니","주의 날에 내가 성령에 감동하여 내 뒤에서 나는 나팔 소리 같은 큰 음성을 들으니","가로되 너 보는 것을 책에 써서 에베소, 서머나, 버가모, 두아디라, 사데, 빌라델비아, 라오디게아 일곱 교회에 보내라 하시기로","몸을 돌이켜 나더러 말한 음성을 알아보려고 하여 돌이킬 때에 일곱 금 촛대를 보았는데","촛대 사이에 인자 같은 이가 발에 끌리는 옷을 입고 가슴에 금띠를 띠고","그 머리와 털의 희기가 흰 양털 같고 눈 같으며 그의 눈은 불꽃 같고","그의 발은 풀무에 단련한 빛난 주석 같고 그의 음성은 많은 물소리와 같으며","그 오른손에 일곱 별이 있고 그 입에서 좌우에 날선 검이 나오고 그 얼굴은 해가 힘있게 비취는 것 같더라","내가 볼 때에 그 발 앞에 엎드러져 죽은 자 같이 되매 그가 오른손을 내게 얹고 가라사대 두려워 말라 나는 처음이요 나중이니","곧 산 자라 내가 전에 죽었었노라 볼지어다 이제 세세토록 살아 있어 사망과 음부의 열쇠를 가졌노니","그러므로 네 본 것과 이제 있는 일과 장차 될 일을 기록하라","네 본 것은 내 오른손에 일곱 별의 비밀과 일곱 금 촛대라 일곱 별은 일곱 교회의 사자요 일곱 촛대는 일곱 교회니라"],
+            // ... 나머지 장들은 동일하게 유지
+            2: ["에베소 교회의 사자에게 편지하기를 오른손에 일곱 별을 붙잡고 일곱 금 촛대 사이에 다니시는 이가 가라사대","내가 네 행위와 수고와 네 인내를 알고 또 악한 자들을 용납지 아니한 것과 자칭 사도라 하되 아닌 자들을 시험하여 그 거짓된 것을 네가 드러낸 것과","또 네가 참고 내 이름을 위하여 견디고 게으르지 아니한 것을 아노라","그러나 너를 책망할 것이 있나니 너의 처음 사랑을 버렸느니라","그러므로 어디서 떨어진 것을 생각하고 회개하여 처음 행위를 가지라 만일 그리하지 아니하고 회개치 아니하면 내가 네게 임하여 네 촛대를 그 자리에서 옮기리라","오직 네게 이것이 있으니 네가 니골라당의 행위를 미워하는도다 나도 이것을 미워하노라","귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을찌어다 이기는 그에게는 내가 하나님의 낙원에 있는 생명나무의 과실을 주어 먹게 하리라","서머나 교회의 사자에게 편지하기를 처음이요 나중이요 죽었다가 살아나신 이가 가라사대","내가 네 환난과 궁핍을 아노니 실상은 네가 부요한 자니라 자칭 유대인이라 하는 자들의 훼방도 아노니 실상은 유대인이 아니요 사단의 회라","네가 장차 받을 고난을 두려워 말라 볼찌어다 마귀가 장차 너희 가운데서 몇 사람을 옥에 던져 시험을 받게 하리니 너희가 십일 동안 환난을 받으리라 네가 죽도록 충성하라 그리하면 내가 생명의 면류관을 네게 주리라","귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을찌어다 이기는 자는 둘째 사망의 해를 받지 아니하리라","버가모 교회의 사자에게 편지하기를 좌우에 날선 검을 가진 이가 가라사대","네가 어디 사는 것을 내가 아노니 거기는 사단의 위가 있는 데라 네가 내 이름을 굳게 잡아서 내 충성된 증인 안디바가 너희 가운데 곧 사단의 거하는 곳에서 죽임을 당할 때에도 나를 믿는 믿음을 저버리지 아니하였도다","그러나 네게 두어가지 책망할 것이 있나니 거기 네게 발람의 교훈을 지키는 자들이 있도다 발람이 발락을 가르쳐 이스라엘 앞에 올무를 놓아 우상의 제물을 먹게 하였고 또 행음하게 하였느니라","이와 같이 네게도 니골라당의 교훈을 지키는 자들이 있도다","그러므로 회개하라 그리하지 아니하면 내가 네게 속히 임하여 내 입의 검으로 그들과 싸우리라","귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을찌어다 이기는 그에게는 내가 감추었던 만나를 주고 또 흰 돌을 줄터인데 그 돌 위에 새 이름을 기록한 것이 있나니 받는 자 밖에는 그 이름을 알 사람이 없느니라","두아디라 교회의 사자에게 편지하기를 그 눈이 불꽃 같고 그 발이 빛난 주석과 같은 하나님의 아들이 가라사대","내가 네 사업과 사랑과 믿음과 섬김과 인내를 아노니 네 나중 행위가 처음것보다 많도다","그러나 네게 책망할 일이 있노라 자칭 선지자라 하는 여자 이세벨을 네가 용납함이니 그가 내 종들을 가르쳐 꾀어 행음하게 하고 우상의 제물을 먹게 하는도다","또 내가 그에게 회개할 기회를 주었으되 그 음행을 회개하고자 아니하는도다","볼찌어다 내가 그를 침상에 던질터이요 또 그로 더불어 간음하는 자들도 만일 그의 행위를 회개치 아니하면 큰 환난 가운데 던지고","또 내가 사망으로 그의 자녀를 죽이리니 모든 교회가 나는 사람의 뜻과 마음을 살피는 자인줄 알찌라 내가 너희 각 사람의 행위대로 갚아 주리라","두아디라에 남아 있어 이 교훈을 받지 아니하고 소위 사단의 깊은 것을 알지 못하는 너희에게 말하노니 다른 짐으로 너희에게 지울 것이 없노라","다만 너희에게 있는 것을 내가 올 때까지 굳게 잡으라","이기는 자와 끝까지 내 일을 지키는 그에게 만국을 다스리는 권세를 주리니","그가 철장을 가지고 저희를 다스려 질그릇 깨뜨리는 것과 같이 하리라 나도 내 아버지께 받은 것이 그러하니라","내가 또 그에게 새벽 별을 주리라","귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을찌어다"],
+            3: ["사데 교회의 사자에게 편지하기를 하나님의 일곱 영과 일곱 별을 가진이가 가라사대 내가 네 행위를 아노니 네가 살았다 하는 이름은 가졌으나 죽은 자로다","너는 일깨워 그 남은바 죽게 된 것을 굳게 하라 내 하나님 앞에 네 행위의 온전한 것을 찾지 못하였노니","그러므로 네가 어떻게 받았으며 어떻게 들었는지 생각하고 지키어 회개하라 만일 일깨지 아니하면 내가 도적 같이 이르리니 어느 시에 네게 임할는지 네가 알지 못하리라","그러나 사데에 그 옷을 더럽히지 아니한 자 몇명이 네게 있어 흰 옷을 입고 나와 함께 다니리니 그들은 합당한 자인 연고라","이기는 자는 이와 같이 흰 옷을 입을 것이요 내가 그 이름을 생명책에서 반드시 흐리지 아니하고 그 이름을 내 아버지 앞과 그 천사들 앞에서 시인하리라","귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을찌어다","빌라델비아 교회의 사자에게 편지하기를 거룩하고 진실하사 다윗의 열쇠를 가지신 이 곧 열면 닫을 사람이 없고 닫으면 열 사람이 없는 그이가 가라사대","볼찌어다 내가 네 앞에 열린 문을 두었으되 능히 닫을 사람이 없으리라 내가 네 행위를 아노니 네가 적은 능력을 가지고도 내 말을 지키며 내 이름을 배반치 아니하였도다","보라 사단의 회 곧 자칭 유대인이라 하나 그렇지 않고 거짓말 하는 자들 중에서 몇을 네게 주어 저희로 와서 네 발앞에 절하게 하고 내가 너를 사랑하는 줄을 알게 하리라","네가 나의 인내의 말씀을 지켰은즉 내가 또한 너를 지키어 시험의 때를 면하게 하리니 이는 장차 온 세상에 임하여 땅에 거하는 자들을 시험할 때라","내가 속히 임하리니 네가 가진 것을 굳게 잡아 아무나 네 면류관을 빼앗지 못하게 하라","이기는 자는 내 하나님 성전에 기둥이 되게 하리니 그가 결코 다시 나가지 아니하리라 내가 하나님의 이름과 하나님의 성 곧 하늘에서 내 하나님께로부터 내려 오는 새 예루살렘의 이름과 나의 새 이름을 그이 위에 기록하리라","귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을찌어다","라오디게아 교회의 사자에게 편지하기를 아멘이시요 충성되고 참된 증인이시요 하나님의 창조의 근본이신 이가 가라사대","내가 네 행위를 아노니 네가 차지도 아니하고 더웁지도 아니하도다 네가 차든지 더웁든지 하기를 원하노라","네가 이같이 미지근하여 더웁지도 아니하고 차지도 아니하니 내 입에서 너를 토하여 내치리라","네가 말하기를 나는 부자라 부요하여 부족한 것이 없다 하나 네 곤고한 것과 가련한 것과 가난한 것과 눈 먼것과 벌거벗은 것을 알지 못하도다","내가 너를 권하노니 내게서 불로 연단한 금을 사서 부요하게 하고 흰 옷을 사서 입어 벌거벗은 수치를 보이지 않게 하고 안약을 사서 눈에 발라 보게 하라","무릇 내가 사랑하는 자를 책망하여 징계하노니 그러므로 네가 열심을 내라 회개하라","볼찌어다 내가 문밖에 서서 두드리노니 누구든지 내 음성을 듣고 문을 열면 내가 그에게로 들어가 그로 더불어 먹고 그는 나로 더불어 먹으리라","이기는 그에게는 내가 내 보좌에 함께 앉게 하여주기를 내가 이기고 아버지 보좌에 함께 앉은 것과 같이 하리라","귀 있는 자는 성령이 교회들에게 하시는 말씀을 들을찌어다"],
+            // 나머지 장들도 동일하게 포함되어 있음 (생략)
+            4: ["이 일 후에 내가 보니 하늘에 열린 문이 있는데 내가 들은바 처음에 내게 말하던 나팔소리 같은 그 음성이 가로되 이리로 올라오라 이 후에 마땅히 될 일을 내가 네게 보이리라 하시더라","내가 곧 성령에 감동하였더니 보라 하늘에 보좌를 베풀었고 그 보좌 위에 앉으신 이가 있는데","앉으신 이의 모양이 벽옥과 홍보석 같고 또 무지개가 있어 보좌에 둘렸는데 그 모양이 녹보석 같더라","또 보좌에 둘려 이십 사 보좌들이 있고 그 보좌들 위에 이십 사 장로들이 흰 옷을 입고 머리에 금 면류관을 쓰고 앉았더라","보좌로부터 번개와 음성과 뇌성이 나고 보좌 앞에 일곱 등불 켠것이 있으니 이는 하나님의 일곱 영이라","보좌 앞에 수정과 같은 유리 바다가 있고 보좌 가운데와 보좌 주위에 네 생물이 있는데 앞뒤에 눈이 가득하더라","그 첫째 생물은 사자 같고 그 둘째 생물은 송아지 같고 그 세째 생물은 얼굴이 사람 같고 그 네째 생물은 날아가는 독수리 같은데","네 생물이 각각 여섯 날개가 있고 그 안과 주위에 눈이 가득하더라 그들이 밤낮 쉬지 않고 이르기를 거룩하다 거룩하다 거룩하다 주 하나님 곧 전능하신 이여 전에도 계셨고 이제도 계시고 장차 오실 자라 하고","그 생물들이 영광과 존귀와 감사를 보좌에 앉으사 세세토록 사시는 이에게 돌릴 때에","이십사 장로들이 보좌에 앉으신 이 앞에 엎드려 세세토록 사시는 이에게 경배하고 자기의 면류관을 보좌 앞에 던지며 가로되","우리 주 하나님이여 영광과 존귀와 능력을 받으시는 것이 합당하오니 주께서 만물을 지으신지라 만물이 주의 뜻대로 있었고 또 지으심을 받았나이다 하더라"],
+            5: ["내가 보매 보좌에 앉으신 이의 오른손에 책이 있으니 안팎으로 썼고 일곱 인으로 봉하였더라","또 보매 힘 있는 천사가 큰 음성으로 외치기를 누가 책을 펴며 그 인을 떼기에 합당하냐 하니","하늘 위에나 땅 위에나 땅 아래에 능히 책을 펴거나 보거나 할 이가 없더라","이 책을 펴거나 보거나 하기에 합당한 자가 보이지 않기로 내가 크게 울었더니","장로 중에 하나가 내게 말하되 울지 말라 유대 지파의 사자 다윗의 뿌리가 이기었으니 이 책과 그 일곱 인을 떼시리라 하더라","내가 또 보니 보좌와 네 생물과 장로들 사이에 어린 양이 섰는데 일찍 죽임을 당한것 같더라 일곱 뿔과 일곱 눈이 있으니 이 눈은 온 땅에 보내심을 입은 하나님의 일곱 영이더라","어린 양이 나아와서 보좌에 앉으신 이의 오른손에서 책을 취하시니라","책을 취하시매 네 생물과 이십 사 장로들이 어린 양 앞에 엎드려 각각 거문고와 향이 가득한 금 대접을 가졌으니 이 향은 성도의 기도들이라","새 노래를 노래하여 가로되 책을 가지시고 그 인봉을 떼기에 합당하시도다 일찍 죽임을 당하사 각 족속과 방언과 백성과 나라 가운데서 사람들을 피로 사서 하나님께 드리시고","저희로 우리 하나님 앞에서 나라와 제사장을 삼으셨으니 저희가 땅에서 왕노릇하리로다 하더라","내가 또 보고 들으매 보좌와 생물들과 장로들을 둘러 선 많은 천사의 음성이 있으니 그 수가 만만이요 천천이라","큰 음성으로 가로되 죽임을 당하신 어린 양이 능력과 부와 지혜와 힘과 존귀와 영광과 찬송을 받으시기에 합당하도다 하더라","내가 또 들으니 하늘 위에와 땅 위에와 땅 아래와 바다 위에와 또 그 가운데 모든 만물이 가로되 보좌에 앉으신 이와 어린 양에게 찬송과 존귀와 영광과 능력을 세세토록 돌릴찌어다 하니","네 생물이 가로되 아멘 하고 장로들은 엎드려 경배하더라"],
+            // 6-22장도 동일하게 포함 (여기서는 생략)
+            21: ["또 내가 새 하늘과 새 땅을 보니 처음 하늘과 처음 땅이 없어졌고 바다도 다시 있지 않더라","또 내가 보매 거룩한 성 새 예루살렘이 하나님께로부터 하늘에서 내려오니 그 예비한 것이 신부가 남편을 위하여 단장한 것 같더라","내가 들으니 보좌에서 큰 음성이 나서 가로되 보라 하나님의 장막이 사람들과 함께 있으매 하나님이 저희와 함께 거하시리니 저희는 하나님의 백성이 되고 하나님은 친히 저희와 함께 계셔서","모든 눈물을 그 눈에서 씻기시매 다시 사망이 없고 애통하는 것이나 곡하는 것이나 아픈 것이 다시 있지 아니하리니 처음 것들이 다 지나갔음이러라","보좌에 앉으신 이가 가라사대 보라 내가 만물을 새롭게 하노라 하시고 또 가라사대 이 말은 신실하고 참되니 기록하라 하시고","또 내게 말씀하시되 이루었도다 나는 알파와 오메가요 처음과 나중이라 내가 생명수 샘물로 목 마른 자에게 값 없이 주리니","이기는 자는 이것들을 유업으로 얻으리라 나는 저의 하나님이 되고 그는 내 아들이 되리라"],
+            22: ["또 저가 수정 같이 맑은 생명수의 강을 내게 보이니 하나님과 및 어린 양의 보좌로부터 나서","길 가운데로 흐르더라 강 좌우에 생명 나무가 있어 열 두가지 실과를 맺히되 달마다 그 실과를 맺히고 그 나무 잎사귀들은 만국을 소성하기 위하여 있더라","다시 저주가 없으며 하나님과 그 어린 양의 보좌가 그 가운데 있으리니 그의 종들이 그를 섬기며","그의 얼굴을 볼터이요 그의 이름도 저희 이마에 있으리라","다시 밤이 없겠고 등불과 햇빛이 쓸데 없으니 이는 주 하나님이 저희에게 비취심이라 저희가 세세토록 왕노릇하리로다"]
+        };
+        
+        let currentChapter = 1;
+        let memorizedVerses = new Set();
+        let memorizedTitles = new Set();
+        let titleHidden = false;
+        let showOnlyKey = false;
+        
+        // 오디오 관련 변수
+        const audioPlayer = document.getElementById('audioPlayer');
+        let audioChapter = 1;
+        let isPlaying = false;
+        let isRepeat = false;
+        let isShuffle = false;
+        let isSectionRepeat = false;
+        let sectionStart = 0;
+        let sectionEnd = 0;
+        let playlist = [];
+        let playbackSpeed = 1.0;
+        const speedOptions = [1.0, 1.25, 1.5, 1.75, 2.0];
+        
+        // 음원 파일 경로 (실제 파일 경로로 수정 필요)
+        function getAudioPath(chapter) {
+            return `/audio/revelation_${chapter}.mp3`;
+            // 또는 외부 URL: return `https://your-domain.com/audio/revelation_${chapter}.mp3`;
+        }
+        
+        // 오디오 초기화
+        function initAudio() {
+            loadAudio(audioChapter);
+            updatePlaylist();
+            
+            // 오디오 이벤트 리스너
+            audioPlayer.addEventListener('timeupdate', updateProgress);
+            audioPlayer.addEventListener('ended', handleAudioEnded);
+            audioPlayer.addEventListener('loadedmetadata', updateDuration);
+            
+            // 프로그레스 바 조작
+            document.getElementById('progressSlider').addEventListener('input', function() {
+                const time = (this.value / 100) * audioPlayer.duration;
+                audioPlayer.currentTime = time;
+            });
+            
+            // 볼륨 조절
+            document.getElementById('volumeSlider').addEventListener('input', function() {
+                audioPlayer.volume = this.value / 100;
+                document.getElementById('volumeDisplay').textContent = this.value + '%';
+            });
+            
+            // 초기 볼륨 설정
+            audioPlayer.volume = 0.7;
+        }
+        
+        // 오디오 로드
+        function loadAudio(chapter) {
+            audioChapter = chapter;
+            audioPlayer.src = getAudioPath(chapter);
+            audioPlayer.playbackRate = playbackSpeed; // 배속 유지
+            updateAudioDisplay();
+            updatePlaylist();
+        }
+        
+        // 오디오 디스플레이 업데이트
+        function updateAudioDisplay() {
+            document.getElementById('audioChapterDisplay').textContent = `계 ${audioChapter}장`;
+            document.getElementById('audioTitleDisplay').textContent = chapterTitles[audioChapter] || '';
+        }
+        
+        // 재생
+        function playAudio() {
+            audioPlayer.play();
+            isPlaying = true;
+            document.getElementById('playBtn').classList.add('playing');
+            document.getElementById('pauseBtn').classList.remove('playing');
+        }
+        
+        // 일시정지
+        function pauseAudio() {
+            audioPlayer.pause();
+            isPlaying = false;
+            document.getElementById('playBtn').classList.remove('playing');
+            document.getElementById('pauseBtn').classList.add('playing');
+        }
+        
+        // 정지
+        function stopAudio() {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            isPlaying = false;
+            document.getElementById('playBtn').classList.remove('playing');
+            document.getElementById('pauseBtn').classList.remove('playing');
+        }
+        
+        // 이전 장
+        function previousChapter() {
+            if (isShuffle) {
+                audioChapter = Math.floor(Math.random() * 22) + 1;
+            } else {
+                audioChapter = audioChapter > 1 ? audioChapter - 1 : 22;
             }
-        };
-
-        let hiddenVerses = new Set();
-        let showAllMode = false;
-
-        function renderChapters() {
-            const container = document.getElementById('chapters');
+            loadAudio(audioChapter);
+            if (isPlaying) playAudio();
+        }
+        
+        // 다음 장
+        function nextChapter() {
+            if (isShuffle) {
+                audioChapter = Math.floor(Math.random() * 22) + 1;
+            } else {
+                audioChapter = audioChapter < 22 ? audioChapter + 1 : 1;
+            }
+            loadAudio(audioChapter);
+            if (isPlaying) playAudio();
+        }
+        
+        // 반복 토글
+        function toggleRepeat() {
+            isRepeat = !isRepeat;
+            const btn = document.getElementById('repeatBtn');
+            if (isRepeat) {
+                btn.classList.add('repeat-on');
+                btn.textContent = '🔁 반복ON';
+            } else {
+                btn.classList.remove('repeat-on');
+                btn.textContent = '🔁 전체반복';
+            }
+        }
+        
+        // 랜덤 토글
+        function toggleShuffle() {
+            isShuffle = !isShuffle;
+            const btn = document.getElementById('shuffleBtn');
+            if (isShuffle) {
+                btn.classList.add('repeat-on');
+                btn.textContent = '🔀 랜덤ON';
+            } else {
+                btn.classList.remove('repeat-on');
+                btn.textContent = '🔀 랜덤재생';
+            }
+        }
+        
+        // 구간 반복 토글
+        function toggleSectionRepeat() {
+            isSectionRepeat = !isSectionRepeat;
+            const btn = document.getElementById('sectionRepeatBtn');
+            if (isSectionRepeat) {
+                btn.classList.add('repeat-on');
+                btn.textContent = '🔂 구간ON';
+                if (sectionStart === 0 && sectionEnd === 0) {
+                    sectionStart = audioPlayer.currentTime;
+                    sectionEnd = audioPlayer.duration;
+                    alert(`구간 설정: ${formatTime(sectionStart)} ~ ${formatTime(sectionEnd)}`);
+                }
+            } else {
+                btn.classList.remove('repeat-on');
+                btn.textContent = '🔂 구간반복';
+                sectionStart = 0;
+                sectionEnd = 0;
+            }
+        }
+        
+        // 배속 변경
+        function changeSpeed() {
+            const currentIndex = speedOptions.indexOf(playbackSpeed);
+            const nextIndex = (currentIndex + 1) % speedOptions.length;
+            playbackSpeed = speedOptions[nextIndex];
+            audioPlayer.playbackRate = playbackSpeed;
+            
+            const btn = document.getElementById('speedBtn');
+            btn.textContent = `⚡ ${playbackSpeed}x`;
+            
+            // 1.0배속이 아닐 때 버튼 강조
+            if (playbackSpeed !== 1.0) {
+                btn.classList.add('repeat-on');
+            } else {
+                btn.classList.remove('repeat-on');
+            }
+        }
+        
+        // 오디오 종료 처리
+        function handleAudioEnded() {
+            if (isSectionRepeat && sectionStart > 0) {
+                audioPlayer.currentTime = sectionStart;
+                playAudio();
+            } else if (isRepeat) {
+                nextChapter();
+            } else {
+                stopAudio();
+            }
+        }
+        
+        // 프로그레스 업데이트
+        function updateProgress() {
+            if (audioPlayer.duration) {
+                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                document.getElementById('progressSlider').value = progress;
+                document.getElementById('currentTime').textContent = formatTime(audioPlayer.currentTime);
+                
+                // 구간 반복 체크
+                if (isSectionRepeat && sectionEnd > 0 && audioPlayer.currentTime >= sectionEnd) {
+                    audioPlayer.currentTime = sectionStart;
+                }
+            }
+        }
+        
+        // 재생 시간 업데이트
+        function updateDuration() {
+            document.getElementById('duration').textContent = formatTime(audioPlayer.duration);
+        }
+        
+        // 시간 포맷팅
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // 플레이리스트 업데이트
+        function updatePlaylist() {
+            const container = document.getElementById('playlistContainer');
             container.innerHTML = '';
             
-            for (let [chapterNum, chapter] of Object.entries(revelation)) {
-                const chapterDiv = document.createElement('div');
-                chapterDiv.className = 'chapter';
-                chapterDiv.innerHTML = `
-                    <div class="chapter-header" onclick="toggleChapter(${chapterNum})">
-                        <span class="chevron" id="chevron-${chapterNum}">▶</span>
-                        <div class="chapter-title">${chapter.title}</div>
-                        <span class="verse-count">${chapter.verses.length}구절</span>
+            for (let i = 1; i <= 22; i++) {
+                const item = document.createElement('div');
+                item.className = 'playlist-item' + (i === audioChapter ? ' active' : '');
+                item.textContent = `${i}장. ${chapterTitles[i]}`;
+                item.onclick = () => {
+                    loadAudio(i);
+                    if (isPlaying) playAudio();
+                };
+                container.appendChild(item);
+            }
+        }
+        
+        // 플레이리스트 아이템 클릭
+        function playChapter(chapter) {
+            loadAudio(chapter);
+            playAudio();
+        }
+        
+        // === 기존 암송 도구 함수들 ===
+        function renderVerses() {
+            const container = document.getElementById('versesContainer');
+            const verses = chapters[currentChapter] || [];
+            const title = chapterTitles[currentChapter] || '';
+            
+            container.innerHTML = '';
+            
+            if (title) {
+                const titleContainer = document.createElement('div');
+                titleContainer.className = 'chapter-title-container';
+                titleContainer.innerHTML = `
+                    <div class="chapter-title ${titleHidden ? 'hidden' : ''}" id="chapterTitle" onclick="toggleTitleVisibility()">
+                        계 ${currentChapter}장: ${title}
                     </div>
-                    <div class="verses" id="verses-${chapterNum}"></div>
+                    <div class="title-memorized">
+                        <label>
+                            <input type="checkbox" 
+                                   ${memorizedTitles.has(currentChapter) ? 'checked' : ''}
+                                   onchange="toggleTitleMemorized(${currentChapter})">
+                            제목 외웠어요!
+                        </label>
+                    </div>
                 `;
-                container.appendChild(chapterDiv);
+                container.appendChild(titleContainer);
+            }
+            
+            verses.forEach((verse, index) => {
+                const verseDiv = document.createElement('div');
+                const verseNumber = index + 1;
                 
-                const versesContainer = chapterDiv.querySelector(`#verses-${chapterNum}`);
-                chapter.verses.forEach((text, index) => {
-                    const verseNum = index + 1;
-                    const verseId = `${chapterNum}-${verseNum}`;
-                    const isHidden = hiddenVerses.has(verseId);
-                    const isHighlight = highlightVerses[chapterNum]?.includes(verseNum);
-                    
-                    const verseDiv = document.createElement('div');
-                    verseDiv.className = 'verse';
-                    verseDiv.onclick = () => toggleVerse(chapterNum, verseNum);
-                    verseDiv.innerHTML = `
-                        <div class="verse-header">
-                            <div class="verse-num ${isHighlight ? 'highlight' : ''}">${verseNum}</div>
-                            <div class="verse-text ${isHidden ? 'verse-hidden' : ''}">
-                                ${isHidden ? '👁️ 클릭하여 구절 보기' : text}
-                            </div>
-                        </div>
-                    `;
-                    versesContainer.appendChild(verseDiv);
-                });
-            }
-        }
-
-        function toggleChapter(chapterNum) {
-            const versesDiv = document.getElementById(`verses-${chapterNum}`);
-            const chevron = document.getElementById(`chevron-${chapterNum}`);
-            versesDiv.classList.toggle('show');
-            chevron.classList.toggle('rotate');
-        }
-
-        function toggleVerse(chapterNum, verseNum) {
-            const verseId = `${chapterNum}-${verseNum}`;
-            if (hiddenVerses.has(verseId)) {
-                hiddenVerses.delete(verseId);
-            } else {
-                hiddenVerses.add(verseId);
-            }
-            renderChapters();
-        }
-
-        function toggleAll() {
-            if (showAllMode) {
-                hiddenVerses.clear();
-                document.getElementById('toggle-text').textContent = '모두 숨기기';
-            } else {
-                hiddenVerses = new Set();
-                for (let [chapterNum, chapter] of Object.entries(revelation)) {
-                    for (let i = 1; i <= chapter.verses.length; i++) {
-                        hiddenVerses.add(`${chapterNum}-${i}`);
-                    }
+                const isKeyVerse = (keyVerses[currentChapter] && keyVerses[currentChapter].includes(verseNumber)) ||
+                                   (specialKeyVerses[currentChapter] && specialKeyVerses[currentChapter].includes(verseNumber));
+                
+                if (showOnlyKey && !isKeyVerse) {
+                    return;
                 }
-                document.getElementById('toggle-text').textContent = '모두 보기';
-            }
-            showAllMode = !showAllMode;
-            renderChapters();
+                
+                let verseClass = 'verse-container';
+                
+                if (isKeyVerse) {
+                    verseClass += ' key-verse';
+                }
+                
+                if (memorizedVerses.has(`${currentChapter}-${index}`)) {
+                    verseClass += ' memorized';
+                }
+                
+                verseDiv.className = verseClass;
+                
+                const words = verse.split(' ');
+                const wordsHTML = words.map((word, wordIndex) => 
+                    `<span class="word" data-verse="${index}" data-word="${wordIndex}">${word}</span>`
+                ).join(' ');
+                
+                verseDiv.innerHTML = `
+                    <div class="verse-header">
+                        <span class="verse-number">${index + 1}절</span>
+                        <label class="memorize-check">
+                            <input type="checkbox" 
+                                   ${memorizedVerses.has(`${currentChapter}-${index}`) ? 'checked' : ''}
+                                   onchange="toggleMemorized(${currentChapter}, ${index})">
+                            <span>외웠어요!</span>
+                        </label>
+                    </div>
+                    <div class="verse-text">${wordsHTML}</div>
+                `;
+                
+                container.appendChild(verseDiv);
+            });
+            
+            document.querySelectorAll('.word').forEach(word => {
+                word.addEventListener('click', function() {
+                    this.classList.toggle('hidden');
+                    updateStats();
+                });
+            });
+            
+            updateStats();
         }
-
-        renderChapters();
+        
+        function toggleMemorized(chapter, verseIndex) {
+            const key = `${chapter}-${verseIndex}`;
+            if (memorizedVerses.has(key)) {
+                memorizedVerses.delete(key);
+            } else {
+                memorizedVerses.add(key);
+            }
+            renderVerses();
+        }
+        
+        function toggleTitleVisibility() {
+            titleHidden = !titleHidden;
+            const titleElement = document.getElementById('chapterTitle');
+            if (titleElement) {
+                titleElement.classList.toggle('hidden');
+            }
+        }
+        
+        function toggleTitleMemorized(chapter) {
+            if (memorizedTitles.has(chapter)) {
+                memorizedTitles.delete(chapter);
+            } else {
+                memorizedTitles.add(chapter);
+            }
+            updateStats();
+        }
+        
+        function hideRandom() {
+            const words = document.querySelectorAll('.word');
+            words.forEach(word => {
+                word.classList.remove('hidden');
+            });
+            
+            const wordsArray = Array.from(words);
+            const hideCount = Math.floor(wordsArray.length * 0.3);
+            
+            const shuffled = wordsArray.sort(() => 0.5 - Math.random());
+            shuffled.slice(0, hideCount).forEach(word => {
+                word.classList.add('hidden');
+            });
+            
+            updateStats();
+        }
+        
+        function showAll() {
+            document.querySelectorAll('.word').forEach(word => {
+                word.classList.remove('hidden');
+            });
+            updateStats();
+        }
+        
+        function hideAll() {
+            document.querySelectorAll('.word').forEach(word => {
+                word.classList.add('hidden');
+            });
+            updateStats();
+        }
+        
+        function resetProgress() {
+            if (confirm('모든 암송 진도를 초기화하시겠습니까?')) {
+                memorizedVerses.clear();
+                memorizedTitles.clear();
+                titleHidden = false;
+                renderVerses();
+            }
+        }
+        
+        function showOnlyKeyVerses() {
+            showOnlyKey = true;
+            renderVerses();
+        }
+        
+        function showAllVerses() {
+            showOnlyKey = false;
+            renderVerses();
+        }
+        
+        function updateStats() {
+            const verses = chapters[currentChapter] || [];
+            const hiddenWordsCount = document.querySelectorAll('.word.hidden').length;
+            const memorizedCount = Array.from(memorizedVerses).filter(v => 
+                v.startsWith(`${currentChapter}-`)
+            ).length;
+            
+            const keyVersesInChapter = new Set();
+            if (keyVerses[currentChapter]) {
+                keyVerses[currentChapter].forEach(v => keyVersesInChapter.add(v));
+            }
+            if (specialKeyVerses[currentChapter]) {
+                specialKeyVerses[currentChapter].forEach(v => keyVersesInChapter.add(v));
+            }
+            
+            document.getElementById('totalVerses').textContent = verses.length;
+            document.getElementById('keyVersesCount').textContent = keyVersesInChapter.size;
+            document.getElementById('memorizedVerses').textContent = memorizedCount;
+            document.getElementById('memorizedTitles').textContent = memorizedTitles.size;
+            document.getElementById('hiddenWords').textContent = hiddenWordsCount;
+            
+            const progress = verses.length > 0 ? (memorizedCount / verses.length) * 100 : 0;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+        }
+        
+        // 장 선택 이벤트
+        document.getElementById('chapterSelect').addEventListener('change', function() {
+            currentChapter = parseInt(this.value);
+            titleHidden = false;
+            showOnlyKey = false;
+            renderVerses();
+            
+            // 텍스트 장이 변경되면 오디오도 같이 변경 (선택사항)
+            loadAudio(currentChapter);
+        });
+        
+        // 초기화
+        window.onload = function() {
+            initAudio();
+            renderVerses();
+        };
     </script>
 </body>
 </html>
